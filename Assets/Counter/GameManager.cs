@@ -6,12 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-     public static GameManager Instance { get; private set; }
+ public static GameManager Instance { get; private set; }
     public int score = 0;
     public int lives = 3;
     public Text scoreText;
     public Text livesText;
-    public GameObject gameOverPanel; // Panel que contiene el botón de reinicio
+    public Text highScoreText;
+    public Text playerNameText;
+    public GameObject gameOverPanel;
+
+    private string playerName;
+    private int highScore;
 
     void Awake()
     {
@@ -28,14 +33,39 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        ResetGameState(); // Reiniciar el estado del juego cada vez que se inicie la escena
+
+        playerName = PlayerPrefs.GetString("PlayerName", "Player");
+        playerNameText.text = "Player: " + playerName;
+
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+        highScoreText.text = "High Score: " + highScore;
+
         UpdateUI();
-        gameOverPanel.SetActive(false); // Asegúrate de que el panel esté oculto al inicio
+        gameOverPanel.SetActive(false);
+    }
+
+    void ResetGameState()
+    {
+        // Reiniciar las variables del juego
+        score = 0;
+        lives = 3;
+
+        UpdateUI();
     }
 
     public void AddScore(int value)
     {
         score += value;
         UpdateUI();
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt("HighScore", highScore);
+            PlayerPrefs.SetString("HighScoreName", playerName);
+            PlayerPrefs.Save();
+            highScoreText.text = "High Score: " + highScore + " by " + playerName;
+        }
     }
 
     public void LoseLife()
@@ -56,13 +86,13 @@ public class GameManager : MonoBehaviour
 
     void GameOver()
     {
-        Time.timeScale = 0; // Pausar el juego
-        gameOverPanel.SetActive(true); // Mostrar el panel de fin del juego
+        Time.timeScale = 0;
+        gameOverPanel.SetActive(true);
     }
 
-    public void RestartGame()
+    public void ReturnToMenu()
     {
-        Time.timeScale = 1; // Reanudar el juego
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reiniciar la escena actual
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MenuInicial"); // Carga la escena del menú de inicio
     }
 }
