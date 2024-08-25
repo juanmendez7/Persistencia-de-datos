@@ -33,7 +33,10 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        ResetGameState(); // Reiniciar el estado del juego cada vez que se inicie la escena
+
+     
+
+        ResetGameState(); 
 
         playerName = PlayerPrefs.GetString("PlayerName", "Player");
         playerNameText.text = "Player: " + playerName;
@@ -45,7 +48,7 @@ public class GameManager : MonoBehaviour
         gameOverPanel.SetActive(false);
     }
 
-    void ResetGameState()
+    public void ResetGameState()
     {
         // Reiniciar las variables del juego
         score = 0;
@@ -94,5 +97,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene("MenuInicial"); // Carga la escena del menú de inicio
+        Destroy(gameObject); 
+
     }
 }

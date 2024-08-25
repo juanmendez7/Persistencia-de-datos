@@ -23,9 +23,16 @@ public class StartMenu : MonoBehaviour
 
     public void OnStartButtonClicked()
     {
+
+
         string playerName = playerNameInputField.text;
         PlayerPrefs.SetString("PlayerName", playerName);
         PlayerPrefs.Save();
+
+        if (GameManager.Instance != null)
+    {
+        GameManager.Instance.ResetGameState(); // Asegúrate de que este método sea público
+    }
         SceneManager.LoadScene("Scene"); 
     }
 }
